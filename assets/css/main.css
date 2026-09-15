@@ -85,12 +85,8 @@ ul,ol{padding:0;list-style:none}
 .eyebrow{
   font-family:var(--font-mono);font-weight:500;font-size:11px;line-height:1;
   letter-spacing:.2em;text-transform:uppercase;color:var(--ink-45);
-  display:inline-flex;align-items:baseline;gap:14px;
+  display:inline-block;
 }
-/* Номер раздела вместо декоративной чёрточки: он же служит читателю
-   ориентиром «где я на странице» и рифмуется с нумерацией работ и этапов. */
-.eyebrow b{color:var(--clay);font-weight:500;font-size:13px;letter-spacing:.06em}
-.dark .eyebrow b{color:var(--clay-hi)}
 
 .display{
   font-weight:300;font-size:clamp(38px,5.4vw,80px);line-height:1.0;
@@ -253,7 +249,6 @@ em.mark{font-style:normal;color:var(--clay)}
 .marquee{border-block:1px solid var(--line);padding-block:15px;overflow:hidden;margin-top:clamp(40px,6vw,80px)}
 .marquee__track{display:flex;gap:0;width:max-content;animation:marq 46s linear infinite}
 .marquee.is-off .marquee__track{animation-play-state:paused}
-.marquee:hover .marquee__track{animation-play-state:paused}
 .marquee__track span{
   font-family:var(--font-mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;
   color:var(--ink-45);padding-inline:26px;white-space:nowrap;position:relative;
