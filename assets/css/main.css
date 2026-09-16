@@ -531,28 +531,10 @@ em.mark{font-style:normal;color:var(--clay)}
 .contacts dd a{transition:color .4s var(--e)}
 .contacts dd a:hover{color:var(--clay)}
 .mapwrap{position:relative;width:100%;aspect-ratio:21/9;background:var(--sand);overflow:hidden}
-.mapwrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0;filter:grayscale(1) contrast(.96);
-  opacity:0;transition:opacity .5s var(--e)}
+.mapwrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0;filter:grayscale(1) contrast(.96)}
 /* На тач-экранах фильтр снимаем: обесцвечивание живой карты пересчитывается
    на каждом кадре при перетаскивании и делает её тяжёлой на телефоне. */
 @media (hover:none){.mapwrap iframe{filter:none}}
-.mapwrap.is-ready iframe{opacity:1}
-/* Пока карта едет, на её месте не пустой прямоугольник, а адрес и признак загрузки:
-   пустой блок читается как «сломалось», особенно на телефоне. */
-.mapwrap__wait{
-  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:14px;text-align:center;padding:24px;background:var(--sand);
-  transition:opacity .4s var(--e);
-}
-.mapwrap.is-ready .mapwrap__wait{opacity:0;pointer-events:none}
-.mapwrap__wait p{font-size:clamp(16px,1.9vw,20px);font-weight:400;letter-spacing:-.018em;max-width:24ch}
-.mapwrap__note{font-size:13px;color:var(--ink-45)}
-.mapwrap__note a{color:var(--clay);font-weight:500;text-decoration:underline;text-underline-offset:3px;padding-block:8px}
-.mapwrap__spin{width:26px;height:26px;border:2px solid var(--line);border-top-color:var(--clay);
-  border-radius:50%;animation:mapspin .9s linear infinite}
-@keyframes mapspin{to{transform:rotate(360deg)}}
-@media (prefers-reduced-motion:reduce){.mapwrap__spin{animation:none;border-top-color:var(--line)}}
-.mapwrap__fallback{position:absolute;inset:0;display:grid;place-items:center;font-weight:600;color:var(--clay)}
 
 /* ── Подвал ─────────────────────────────────────────────────────────────── */
 .foot{background:var(--ink);color:var(--on-dark-2);padding-block:clamp(56px,7vw,96px) 34px}
