@@ -213,6 +213,58 @@
     v.addEventListener('ended', function () { box.classList.remove('is-playing'); });
   });
 
+  /* ── Карта ─────────────────────────────────────────────────────────────
+     Виджет и проверка доступности Яндекса стартуют одновременно, за 1400 px
+     до появления блока. Карта показывается, только когда сошлось и то и другое:
+     iframe держим прозрачным, поэтому серый квадрат «страница не открылась»
+     посетитель не увидит никогда. Не ответил Яндекс — адрес и ссылка. */
+  $$('[data-map]').forEach(function (box) {
+    var started = false, loaded = false, alive = false, dead = false;
+
+    function reveal() { if (loaded && alive && !dead) box.classList.add('is-ready'); }
+
+    function fail() {
+      if (dead || box.classList.contains('is-ready')) return;
+      dead = true;
+      var f = $('iframe', box);
+      if (f) f.remove();
+      var wait = $('.mapwrap__wait', box);
+      if (!wait) return;
+      var spin = $('.mapwrap__spin', wait);
+      if (spin) spin.remove();
+      var note = $('.mapwrap__note', wait);
+      if (note) {
+        note.innerHTML = 'Карта сейчас недоступна — ' +
+          '<a href="https://yandex.ru/maps/org/akti_stroy/117723622321/" target="_blank" rel="noopener">открыть на Яндексе</a>';
+      }
+    }
+
+    function start() {
+      if (started) return;
+      started = true;
+
+      var f = document.createElement('iframe');
+      f.title = 'Карта: офис АктиСтрой в Волгограде';
+      f.allowFullscreen = true;
+      f.addEventListener('load', function () { loaded = true; reveal(); });
+      f.addEventListener('error', fail);
+      f.src = box.getAttribute('data-src');
+      box.appendChild(f);
+
+      if (!window.fetch) { alive = true; reveal(); return; }
+      var timer = setTimeout(fail, 10000);
+      fetch('https://yandex.ru/favicon.ico', { mode: 'no-cors', cache: 'no-store' })
+        .then(function () { clearTimeout(timer); alive = true; reveal(); })
+        .catch(function () { clearTimeout(timer); fail(); });
+    }
+
+    if (!('IntersectionObserver' in window)) { start(); return; }
+    var mio = new IntersectionObserver(function (es) {
+      if (es[0].isIntersecting) { start(); mio.disconnect(); }
+    }, { rootMargin: '1400px 0px 1400px 0px' });
+    mio.observe(box);
+  });
+
   /* ── Маска телефона ────────────────────────────────────────────────── */
   function maskPhone(el) {
     function fmt() {
