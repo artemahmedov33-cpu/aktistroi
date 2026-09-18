@@ -623,6 +623,7 @@ em.mark{font-style:normal;color:var(--clay)}
   .rev__who a{padding-block:10px}
 }
 
+
 /* ── Адаптив ────────────────────────────────────────────────────────────── */
 @media (max-width:1180px){
   .tri--4{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -693,4 +694,55 @@ em.mark{font-style:normal;color:var(--clay)}
 @media (max-width:420px){
   .btn{font-size:14px;padding:10px 10px 10px 20px}
   .btn__ico{width:30px;height:30px}
+}
+
+/* ── Карусели ────────────────────────────────────────────────────────────
+   На узких экранах длинные ряды карточек становятся лентой с прокруткой:
+   вертикально сайт короче в разы, а соседняя карточка выглядывает справа —
+   это и есть подсказка, что ленту можно листать. */
+.rail__nav{display:none}
+
+@media (max-width:1024px){
+  .rail{
+    display:grid;
+    /* сброс обязателен: без него карточки сначала раскладываются по колонкам
+       исходной сетки и наезжают друг на друга */
+    grid-template-columns:none;
+    grid-template-rows:none;
+    grid-auto-flow:column;
+    grid-auto-columns:78%;
+    gap:14px;
+    overflow-x:auto;
+    overscroll-behavior-x:contain;
+    scroll-snap-type:x mandatory;
+    scroll-padding-inline:var(--gut);
+    padding-inline:var(--gut);
+    margin-inline:calc(var(--gut) * -1);
+    scrollbar-width:none;
+    -ms-overflow-style:none;
+    border:0;
+    background:none;
+  }
+  .rail::-webkit-scrollbar{display:none}
+  .rail > *{scroll-snap-align:start;min-width:0}
+
+  /* этапы: в сетке их разделяли линии, в ленте — рамка у каждой карточки */
+  .steps.rail > .step{border:1px solid rgba(255,255,255,.16)}
+  /* принципы и преимущества: то же самое */
+  .tri.rail > .tri__i{border:1px solid var(--line);padding:26px 22px}
+  .tri.rail > .tri__i:not(:first-child){padding-left:22px}
+  .tri.rail > .tri__i:nth-child(n+5){border-top:1px solid var(--line)}
+
+  .rail__nav{display:flex;align-items:center;gap:14px;margin-top:18px}
+  .rail__bar{position:relative;flex:1;height:2px;background:var(--line);overflow:hidden}
+  .dark .rail__bar{background:rgba(255,255,255,.18)}
+  .rail__bar i{position:absolute;left:0;top:0;bottom:0;background:var(--clay);
+    transition:transform .35s var(--e),width .35s var(--e)}
+  .rail__count{font-family:var(--font-mono);font-size:12px;letter-spacing:.08em;
+    color:var(--ink-45);flex:none;font-variant-numeric:tabular-nums}
+  .dark .rail__count{color:var(--on-dark-3)}
+}
+
+@media (max-width:560px){
+  .rail{grid-auto-columns:86%}
 }

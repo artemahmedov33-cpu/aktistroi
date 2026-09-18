@@ -217,6 +217,42 @@
      наблюдателей, проверок и плашки «загружаем». Пока человек читает верх
      страницы, виджет успевает отрисоваться, и вниз он приезжает к готовой карте. */
 
+  /* ── Карусели ──────────────────────────────────────────────────────────
+     Лента и прокрутка целиком на CSS (scroll-snap), скрипт только рисует
+     полосу прогресса и счётчик «2 / 6»: без них горизонтальный ряд читается
+     как обрезанная сетка, а не как то, что можно листать. */
+  $$('[data-rail]').forEach(function (rail) {
+    var items = Array.prototype.slice.call(rail.children);
+    if (items.length < 2) return;
+
+    var nav = document.createElement('div');
+    nav.className = 'rail__nav';
+    nav.innerHTML = '<span class="rail__bar"><i></i></span><span class="rail__count"></span>';
+    rail.parentNode.insertBefore(nav, rail.nextSibling);
+    var bar = $('i', nav), count = $('.rail__count', nav);
+
+    var raf = 0;
+    function paint() {
+      raf = 0;
+      if (!rail.clientWidth) return;
+      var max = rail.scrollWidth - rail.clientWidth;
+      // «Страница» — это один экран ленты. Считаем от ширины самой ленты,
+      // а не от ширины карточки: она в момент запуска может быть ещё нулевой.
+      var pages = Math.max(1, Math.ceil(rail.scrollWidth / rail.clientWidth));
+      var p = max > 0 ? rail.scrollLeft / max : 0;
+      var cur = Math.min(pages, Math.round(p * (pages - 1)) + 1);
+      bar.style.width = (100 / pages) + '%';
+      bar.style.transform = 'translateX(' + (p * (pages - 1) * 100) + '%)';
+      count.textContent = cur + ' / ' + pages;
+    }
+    function schedule() { if (!raf) raf = requestAnimationFrame(paint); }
+    rail.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule, { passive: true });
+    // Ширина ленты меняется, пока догружаются картинки, — пересчитываем следом
+    if ('ResizeObserver' in window) new ResizeObserver(schedule).observe(rail);
+    schedule();
+  });
+
   /* ── Маска телефона ────────────────────────────────────────────────── */
   function maskPhone(el) {
     function fmt() {
